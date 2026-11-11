@@ -1,4 +1,6 @@
 # Atmos Weather Intelligence
+**Live interactive demo:** [Open Atmos live demo](https://atmos-weather-intelligence.netlify.app)
+
 
 A clean, interactive weather dashboard powered by live Open-Meteo weather and air-quality data.
 
