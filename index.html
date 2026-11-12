@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="#0a1324" name="theme-color"/>
+  <meta content="Atmos is a weather intelligence dashboard offering forecasts, air quality, and actionable outdoor planning insights." name="description"/>
+  <title>
+   Atmos — Weather Intelligence
+  </title>
+  <link href="./src/styles.css" rel="stylesheet"/>
+  <script src="./src/app.js" type="module">
+  </script>
+ </head>
+ <body>
+  <div class="shell">
+   <aside class="sidebar">
+    <a aria-label="Atmos home" class="brand" href="#top">
+     <span class="brand-mark">
+      ✳
+     </span>
+     <span>
+      atmos
+      <span class="brand-period">
+       .
+      </span>
+     </span>
+    </a>
+    <div class="sidebar-label">
+     WORKSPACE
+    </div>
+    <nav aria-label="Primary navigation">
+     <a class="nav-link active" href="#overview">
+      <span>
+       ◈
+      </span>
+      Overview
+     </a>
+     <a class="nav-link" href="#forecast">
+      <span>
+       ▥
+      </span>
+      Forecast
+     </a>
+     <a class="nav-link" href="#compare">
+      <span>
+       ⇄
+      </span>
+      Compare cities
+     </a>
+     <a class="nav-link" href="#insights">
+      <span>
+       ✧
+      </span>
+      Insights
+     </a>
+    </nav>
+    <div class="sidebar-bottom">
+     <div class="small-eyebrow">
+      BUILT FOR REAL LIFE
+     </div>
+     <p>
+      Smarter decisions, powered by the forecast.
+     </p>
+     <div class="side-credit">
+      Data via
+      <a href="https://open-meteo.com/" rel="noopener noreferrer" target="_blank">
+       Open-Meteo ↗
+      </a>
+     </div>
+    </div>
+   </aside>
+   <main class="main-content" id="top">
+    <header class="topbar">
+     <div>
+      <div class="eyebrow">
+       YOUR WEATHER WORKSPACE
+       <span class="live-dot">
+       </span>
+       LIVE DATA
+      </div>
+      <h1>
+       Weather,
+       <em>
+        understood.
+       </em>
+      </h1>
+      <p class="intro">
+       More than a forecast. Know what the day has in store.
+      </p>
+     </div>
+     <div class="top-actions">
+      <button aria-label="Switch temperature units" class="outline-btn" id="unit-toggle">
+       °F / °C
+      </button>
+      <button class="outline-btn" id="locate">
+       ◎
+       <span>
+        My location
+       </span>
+      </button>
+     </div>
+    </header>
+    <section aria-labelledby="location-title" id="overview">
+     <div class="search-area">
+      <div class="search-box">
+       <label class="sr-only" for="city-search">
+        Search for a city
+       </label>
+       <span class="search-icon">
+        ⌕
+       </span>
+       <input autocomplete="off" id="city-search" placeholder="Search for any city around the world..."/>
+       <kbd>
+        ↵
+       </kbd>
+      </div>
+      <div class="search-results" hidden="" id="search-results">
+      </div>
+     </div>
+     <div class="error-message" hidden="" id="error" role="alert">
+     </div>
+     <div class="loading" id="loading" role="status">
+      Fetching the latest forecast…
+     </div>
+     <div hidden="" id="dashboard">
+      <div class="section-heading">
+       <div>
+        <div class="eyebrow">
+         CURRENT CONDITIONS
+        </div>
+        <h2 id="location-title">
+         Huntsville, Texas
+        </h2>
+        <p class="muted" id="local-time">
+        </p>
+       </div>
+       <button class="text-btn" id="refresh">
+        ↻ Refresh data
+       </button>
+      </div>
+      <div class="hero-grid">
+       <article class="current-card">
+        <div class="current-top">
+         <span class="pill">
+          <span class="live-dot">
+          </span>
+          CURRENTLY
+         </span>
+         <span id="condition">
+          —
+         </span>
+        </div>
+        <div class="current-main">
+         <div>
+          <div class="temperature" id="temperature">
+           —
+          </div>
+          <div class="feels" id="feels-like">
+           —
+          </div>
+         </div>
+         <div aria-hidden="true" class="weather-glyph" id="weather-icon">
+          ☀
+         </div>
+        </div>
+        <div class="current-bottom">
+         <div>
+          <div class="metric-label">
+           HIGH / LOW
+          </div>
+          <strong id="high-low">
+           —
+          </strong>
+         </div>
+         <div>
+          <div class="metric-label">
+           PRECIPITATION
+          </div>
+          <strong id="rain-chance">
+           —
+          </strong>
+         </div>
+         <div>
+          <div class="metric-label">
+           WIND
+          </div>
+          <strong id="wind">
+           —
+          </strong>
+         </div>
+        </div>
+       </article>
+       <article class="insight-card">
+        <div class="card-label">
+         ✧ DAILY BRIEFING
+        </div>
+        <h3 id="brief-title">
+         Your day at a glance.
+        </h3>
+        <p id="brief-copy">
+         Loading recommendations…
+        </p>
+        <div class="chips" id="recommendation-chips">
+        </div>
+        <div class="insight-foot">
+         Rule-based insights generated from forecast conditions
+        </div>
+       </article>
+      </div>
+      <div class="stat-grid">
+       <article class="stat-card">
+        <div class="stat-name">
+         HUMIDITY
+         <span>
+          ◌
+         </span>
+        </div>
+        <div class="stat-number" id="humidity">
+         —
+        </div>
+        <div class="stat-detail">
+         Relative humidity
+        </div>
+       </article>
+       <article class="stat-card">
+        <div class="stat-name">
+         UV INDEX
+         <span>
+          ☼
+         </span>
+        </div>
+        <div class="stat-number" id="uv">
+         —
+        </div>
+        <div class="stat-detail" id="uv-detail">
+         —
+        </div>
+       </article>
+       <article class="stat-card">
+        <div class="stat-name">
+         AIR QUALITY
+         <span>
+          ≋
+         </span>
+        </div>
+        <div class="stat-number" id="aqi">
+         —
+        </div>
+        <div class="stat-detail" id="aqi-detail">
+         US AQI
+        </div>
+       </article>
+       <article class="stat-card">
+        <div class="stat-name">
+         SUNSET
+         <span>
+          ◐
+         </span>
+        </div>
+        <div class="stat-number" id="sunset">
+         —
+        </div>
+        <div class="stat-detail" id="sunrise">
+         —
+        </div>
+       </article>
+      </div>
+      <section class="panel forecast-panel" id="forecast">
+       <div class="panel-title">
+        <div>
+         <div class="eyebrow">
+          THE NEXT 24 HOURS
+         </div>
+         <h3>
+          Hourly outlook
+         </h3>
+        </div>
+        <span class="panel-note">
+         Temperature + precipitation chance
+        </span>
+       </div>
+       <div aria-label="Next 24 hours of hourly temperatures and rain chances" class="hourly-chart" id="hourly-chart" role="img">
+       </div>
+      </section>
+      <section class="panel days-panel">
+       <div class="panel-title">
+        <div>
+         <div class="eyebrow">
+          PLAN AHEAD
+         </div>
+         <h3>
+          7-day forecast
+         </h3>
+        </div>
+        <span class="panel-note">
+         Open-Meteo forecast
+        </span>
+       </div>
+       <div class="daily-list" id="daily-list">
+       </div>
+      </section>
+      <section class="panel compare-panel" id="compare">
+       <div class="panel-title">
+        <div>
+         <div class="eyebrow">
+          MAKE THE COMPARISON
+         </div>
+         <h3>
+          Two cities. One clear choice.
+         </h3>
+        </div>
+       </div>
+       <p class="panel-description">
+        Compare current weather and next-day rain forecasts. Great for planning travel or outdoor activities.
+       </p>
+       <form class="compare-form" id="compare-form">
+        <label class="sr-only" for="compare-city">
+         City to compare
+        </label>
+        <input id="compare-city" placeholder="Enter a city, e.g. Seattle" required=""/>
+        <button type="submit">
+         Compare →
+        </button>
+       </form>
+       <div aria-live="polite" id="compare-results">
+       </div>
+      </section>
+      <section class="panel methodology-panel" id="insights">
+       <div class="eyebrow">
+        BEHIND THE INTELLIGENCE
+       </div>
+       <h3>
+        Clear weather guidance, backed by measurable data.
+       </h3>
+       <p>
+        Atmos converts measurable variables like precipitation probability, UV index, and air quality into understandable suggestions using explicit rules. It's deterministic, auditable, and easy to test.
+       </p>
+       <div class="methodology-tags">
+        <span>
+         REST APIs
+        </span>
+        <span>
+         Asynchronous JavaScript
+        </span>
+        <span>
+         Data transformation
+        </span>
+        <span>
+         Responsive UI
+        </span>
+        <span>
+         Accessible states
+        </span>
+       </div>
+      </section>
+     </div>
+    </section>
+    <footer>
+     ATMOS WEATHER INTELLIGENCE
+     <span>
+      Forecasts are estimates, not emergency alerts. Data:
+      <a href="https://open-meteo.com/" rel="noopener noreferrer" target="_blank">
+       Open-Meteo
+      </a>
+      /
+      <a href="https://open-meteo.com/en/docs/air-quality-api" rel="noopener noreferrer" target="_blank">
+       CAMS
+      </a>
+      .
+     </span>
+    </footer>
+   </main>
+  </div>
+ </body>
+</html>
+
