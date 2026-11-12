@@ -1,8 +1,29 @@
-name: Source import
+name: Import currently published frontend
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/import_source.yml'
+permissions:
+  contents: write
 jobs:
   import:
     runs-on: ubuntu-latest
     steps:
-      - run: echo 'workflow ready'
+      - uses: actions/checkout@v4
+      - name: Fetch published frontend source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$(dirname 'index.html')"; curl --fail --silent --show-error --location --retry 3 --max-time 30 'https://atmos-weather-intelligence.netlify.app/index.html' -o 'index.html'
+          mkdir -p "$(dirname 'src/app.js')"; curl --fail --silent --show-error --location --retry 3 --max-time 30 'https://atmos-weather-intelligence.netlify.app/src/app.js' -o 'src/app.js'
+          mkdir -p "$(dirname 'src/weather.js')"; curl --fail --silent --show-error --location --retry 3 --max-time 30 'https://atmos-weather-intelligence.netlify.app/src/weather.js' -o 'src/weather.js'
+          mkdir -p "$(dirname 'src/insights.js')"; curl --fail --silent --show-error --location --retry 3 --max-time 30 'https://atmos-weather-intelligence.netlify.app/src/insights.js' -o 'src/insights.js'
+          mkdir -p "$(dirname 'src/styles.css')"; curl --fail --silent --show-error --location --retry 3 --max-time 30 'https://atmos-weather-intelligence.netlify.app/src/styles.css' -o 'src/styles.css'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 'index.html' 'src/app.js' 'src/weather.js' 'src/insights.js' 'src/styles.css'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Import published frontend source for full-stack deployment'
+            git push
+          fi
