@@ -1,0 +1,13 @@
+# Atmos Netlify frontend + serverless API bridge
+# Python/FastAPI must run on an external service and be configured via
+# Netlify environment variable PYTHON_API_ORIGIN (HTTPS origin, no /api).
+[build]
+  command = "mkdir -p dist/src && cp index.html dist/index.html && cp src/*.js src/*.css dist/src/"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api?path=:splat"
+  status = 200
+  force = true
