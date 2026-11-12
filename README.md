@@ -1,4 +1,7 @@
 # Atmos Weather Intelligence
+
+**Netlify deployment:** [Setup instructions](NETLIFY_SETUP.md) · Netlify frontend is ready for Git integration. The Python backend is not yet verified live on Netlify's API bridge.
+
 ## Deploy the real full-stack app
 
 [**Deploy Atmos on Render (frontend + FastAPI backend)**](https://render.com/deploy?repo=https://github.com/JakiyaJackson12/atmos-weather-intelligence)
