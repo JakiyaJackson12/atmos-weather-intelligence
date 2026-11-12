@@ -1,0 +1,8 @@
+name: Source import
+on:
+  workflow_dispatch:
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'workflow ready'
