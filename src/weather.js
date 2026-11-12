@@ -16,6 +16,35 @@ async function hasBackend() {
   return backendAvailability;
 }
 
+
+const US_STATES = Object.fromEntries(
+  'AL Alabama;AK Alaska;AZ Arizona;AR Arkansas;CA California;CO Colorado;CT Connecticut;DE Delaware;FL Florida;GA Georgia;HI Hawaii;ID Idaho;IL Illinois;IN Indiana;IA Iowa;KS Kansas;KY Kentucky;LA Louisiana;ME Maine;MD Maryland;MA Massachusetts;MI Michigan;MN Minnesota;MS Mississippi;MO Missouri;MT Montana;NE Nebraska;NV Nevada;NH New Hampshire;NJ New Jersey;NM New Mexico;NY New York;NC North Carolina;ND North Dakota;OH Ohio;OK Oklahoma;OR Oregon;PA Pennsylvania;RI Rhode Island;SC South Carolina;SD South Dakota;TN Tennessee;TX Texas;UT Utah;VT Vermont;VA Virginia;WA Washington;WV West Virginia;WI Wisconsin;WY Wyoming;DC District of Columbia'
+    .split(';').map(entry => {
+      const [abbrev, ...words] = entry.split(' ');
+      return [abbrev.toLowerCase(), words.join(' ')];
+    })
+);
+const cleanPlace = s => String(s || '').trim().toLowerCase().replace(/\./g, '').replace(/\s+/g, ' ');
+function parseLocationQuery(input) {
+  const value = String(input || '').trim();
+  if (value.includes(',')) {
+    const [city, statePart] = value.split(',').map(s => s.trim());
+    const abbr = cleanPlace(statePart);
+    return { city, state: US_STATES[abbr] || statePart };
+  }
+  const lower = cleanPlace(value);
+  const allStates = [...new Set(Object.values(US_STATES))].sort((a,b) => b.length - a.length);
+  for (const state of allStates) {
+    if (lower.endsWith(' ' + state.toLowerCase()))
+      return { city: value.slice(0, -state.length).trim(), state };
+  }
+  const parts = value.split(/\s+/);
+  const last = cleanPlace(parts.at(-1));
+  if (parts.length >= 2 && US_STATES[last])
+    return { city: parts.slice(0,-1).join(' '), state: US_STATES[last] };
+  return { city: value, state: '' };
+}
+
 async function getJSON(url, signal) {
   const response = await fetch(url, { signal });
   if (!response.ok) throw new Error(`Weather service unavailable (HTTP ${response.status}).`);
@@ -32,10 +61,20 @@ export async function searchCities(name, signal) {
     const data = await getJSON(url, signal);
     return data.results || [];
   }
+  const parsed = parseLocationQuery(name);
   const url = new URL(GEO_URL);
-  url.search = new URLSearchParams({ name: name.trim(), count: '7', language: 'en', format: 'json' }).toString();
+  url.search = new URLSearchParams({ name: parsed.city, count: parsed.state ? '100' : '15', language: 'en', format: 'json' }).toString();
   const data = await getJSON(url, signal);
-  return data.results || [];
+  let options = data.results || [];
+  const exactCity = options.filter(item => cleanPlace(item.name) === cleanPlace(parsed.city));
+  if (exactCity.length) options = exactCity;
+  if (parsed.state) {
+    options = options.filter(item =>
+      item.country_code === 'US' &&
+      cleanPlace(item.name) === cleanPlace(parsed.city) &&
+      cleanPlace(item.admin1) === cleanPlace(parsed.state));
+  }
+  return options;
 }
 
 export async function getForecast(location, signal) {
